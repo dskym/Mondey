@@ -1,0 +1,8 @@
+# db_release.cnf
+
+[client]
+database = mondey
+user = admin
+password = tmddbs*7562
+host = test.cjqtilj6bx7x.ap-northeast-2.rds.amazonaws.com
+port = 3306

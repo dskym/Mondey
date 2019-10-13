@@ -1,0 +1,8 @@
+# db_debug.cnf
+
+[client]
+database = mondey
+user = root
+password =
+host = 127.0.0.1
+port = 3306
