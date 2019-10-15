@@ -145,10 +145,7 @@ class PushList(APIView):
 
         message = {
             "to": firebase_token,
-            "data": {
-                "title": data['title'],
-                "body": data['body'],
-            }
+            "data": data
         }
 
         response = requests.post(url=url, data=json.dumps(message), headers=headers)
