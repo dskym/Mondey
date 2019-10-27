@@ -6,3 +6,4 @@ user = admin
 password = mondey1234
 host = test.cjqtilj6bx7x.ap-northeast-2.rds.amazonaws.com
 port = 3306
+default-character-set = utf8

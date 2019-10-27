@@ -12,8 +12,6 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
             'read_default_file': DATABASES_CONFIG,
-            'charset': 'latin1',
-            'use_unicode': True,
         }
     }
 }
