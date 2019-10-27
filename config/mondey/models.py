@@ -25,7 +25,7 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     id = models.BigAutoField(primary_key=True)
     email = models.EmailField(max_length=20, unique=True)
-    password = models.CharField(max_length=100)
+    password = models.CharField(max_length=200)
     firebase_token = models.CharField(max_length=4096, null=True)
 
     USERNAME_FIELD = 'email'
@@ -34,3 +34,47 @@ class User(AbstractBaseUser):
 
     def __str__(self):
         return self.email
+
+
+class UserSetting(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    income = models.IntegerField()
+    alarm = models.TimeField()
+
+
+class Category(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    name = models.EmailField(max_length=20, unique=True)
+
+
+class CustomCategory(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20)
+    limit_amount = models.IntegerField()
+    period = models.CharField(max_length=10)
+
+
+class Expenditure(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    amount = models.IntegerField()
+    detail = models.CharField(max_length=20)
+
+
+class IncomeHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    total_income = models.IntegerField()
+
+
+class CategoryHistory(models.Model):
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    total_limit = models.IntegerField()

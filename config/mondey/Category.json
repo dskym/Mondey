@@ -1,0 +1,51 @@
+[
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 1,
+      "name": "식비"
+    }
+  },
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 2,
+      "name": "쇼핑"
+    }
+  },
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 3,
+      "name": "미용/운동"
+    }
+  },
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 4,
+      "name": "교통, 자동차"
+    }
+  },
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 5,
+      "name": "여가/취미"
+    }
+  },
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 6,
+      "name": "고정비"
+    }
+  },
+  {
+    "model": "mondey.Category",
+    "fields": {
+      "id": 7,
+      "name": "기타"
+    }
+  }
+]

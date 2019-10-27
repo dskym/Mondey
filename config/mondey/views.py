@@ -133,8 +133,6 @@ class PushList(APIView):
         SERVER_KEY = "AAAAtUjeBg4:APA91bH7Hdvr3XgV58j5D-J_ayDnhZseRDKgcdJ7qS8QtGFjfB0J8cnXu4kX61" \
                      "YQS_zfBytarnJseKM7IxTpXdKU2jXCxNsBqUccScLIVNa6DUuIZZZpLGY5QqFVRBs6mTqy4X7Hjnog"
         firebase_token = User.objects.get(email=email).firebase_token
-        # firebase_token = "f9QbFY-15_o:APA91bHBDC2Ze8_FVzE7Zd20XDzxo-6Wo3U_IIDphLQimMnoa0Iag3tIP39VxmgDu" \
-        #                  "9UE1nyP9hYM34hS4DTs4N0jDjdumEkJ2PdYDFttNBRCMZqrKkaztYxaSvUvjPldJwdGoy-AyM9F"
 
         url = 'https://fcm.googleapis.com/fcm/send'
 
