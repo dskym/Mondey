@@ -7,13 +7,17 @@ from django.contrib.auth import get_user_model, authenticate
 
 from .utils import get_token, decode_token
 
+from .models import CustomCategory, Expenditure
+from .serializers import CustomCategorySerializer, ExpenditureSerializer, \
+    IncomeHistorySerializer, CategoryHistorySerializer
+
 import requests
 import json
 
 User = get_user_model()
 
 
-class UserList(APIView):
+class UserAPI(APIView):
     """
     User API
     """
@@ -80,7 +84,7 @@ class UserList(APIView):
         return Response(status=status.HTTP_200_OK)
 
 
-class TokenList(APIView):
+class TokenAPI(APIView):
     """
     Refresh Token API
     """
@@ -98,26 +102,7 @@ class TokenList(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
-class TestList(APIView):
-    """
-    Auth Test API
-    """
-    authentication_classes = (JSONWebTokenAuthentication, )
-
-    def get(self, request):
-        headers = request.headers
-        token = headers['Authorization'].split(' ')[1]
-        data = decode_token(token)
-
-        if data['type'] == 'access':
-            email = data['email']
-
-            return Response(status=status.HTTP_200_OK, data=email)
-
-        return Response(status=status.HTTP_403_FORBIDDEN)
-
-
-class PushList(APIView):
+class PushMessageAPI(APIView):
     """
     FCM Push Message Test API
     """
@@ -156,3 +141,277 @@ class PushList(APIView):
             response_data = json.loads(response.text)
 
         return Response(status=status.HTTP_200_OK, data=response_data)
+
+
+class CustomCategoryView(APIView):
+    """
+    Custom Category API
+
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    custom_category_id = models.IntegerField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    name = models.CharField(max_length=20)
+    limit_amount = models.IntegerField()
+    period = models.CharField(max_length=10)
+    """
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            custom_category_data = {
+                'user': user_id,
+                'custom_category_id': request.data['custom_category_id'],
+                'category': request.data['category'],
+                'name': request.data['name'],
+                'limit_amount': request.data['limit_amount'],
+                'period': request.data['period'],
+            }
+
+            serializer = CustomCategorySerializer(data=custom_category_data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def put(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+            custom_category_id = request.data['custom_category_id']
+
+            custom_category = CustomCategory.objects.filter(user_id=user_id, custom_category_id=custom_category_id)[0]
+
+            custom_category_data = {
+                'id': custom_category.id,
+                'user': user_id,
+                'custom_category_id': custom_category_id,
+                'category': request.data['category'],
+                'name': request.data['name'],
+                'limit_amount': request.data['limit_amount'],
+                'period': request.data['period'],
+            }
+
+            serializer = CustomCategorySerializer(custom_category, data=custom_category_data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+            custom_category_id = request.data['custom_category_id']
+
+            custom_category = CustomCategory.objects.filter(user_id=user_id, custom_category_id=custom_category_id)[0]
+
+            custom_category.delete()
+
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+class ExpenditureView(APIView):
+    """
+    Expenditure API
+
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    expenditure_id = models.IntegerField()
+    custom_category = models.ForeignKey(CustomCategory, on_delete=models.CASCADE)
+    date = models.DateTimeField()
+    amount = models.IntegerField()
+    detail = models.CharField(max_length=20)
+    """
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            expenditure_data = {
+                'user': user_id,
+                'expenditure_id': request.data['expenditure_id'],
+                'custom_category': request.data['custom_category'],
+                'date': request.data['date'],
+                'amount': request.data['amount'],
+                'detail': request.data['detail'],
+            }
+
+            serializer = ExpenditureSerializer(data=expenditure_data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def put(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+            expenditure_id = request.data['expenditure_id']
+
+            expenditure = Expenditure.objects.filter(user_id=user_id, expenditure_id=expenditure_id)[0]
+
+            expenditure_data = {
+                'id': expenditure.id,
+                'user': user_id,
+                'expenditure_id': expenditure_id,
+                'custom_category': request.data['custom_category'],
+                'date': request.data['date'],
+                'amount': request.data['amount'],
+                'detail': request.data['detail'],
+            }
+
+            serializer = ExpenditureSerializer(expenditure, data=expenditure_data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+    def delete(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+            expenditure_id = request.data['expenditure_id']
+
+            expenditure = Expenditure.objects.filter(user_id=user_id, expenditure_id=expenditure_id)[0]
+
+            expenditure.delete()
+
+            return Response(status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+class IncomeHistoryView(APIView):
+    """
+    Income History API
+
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    income_history_id = models.IntegerField()
+    year = models.IntegerField()
+    month = models.IntegerField()
+    total_income = models.IntegerField()
+    """
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            income_history_data = {
+                'user': user_id,
+                'income_history_id': request.data['income_history_id'],
+                'year': request.data['year'],
+                'month': request.data['month'],
+                'total_income': request.data['total_income'],
+            }
+
+            serializer = IncomeHistorySerializer(data=income_history_data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
+
+class CategoryHistoryView(APIView):
+    """
+    Immutable
+
+    Category History API
+
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    category_history_id = models.IntegerField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    year = models.IntegerField()
+    month = models.IntegerField()
+    total_limit = models.IntegerField()
+    """
+    authentication_classes = (JSONWebTokenAuthentication, )
+
+    def post(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            category_history_data = {
+                'user': user_id,
+                'category_history_id': request.data['category_history_id'],
+                'category': request.data['category'],
+                'year': request.data['year'],
+                'month': request.data['month'],
+                'total_limit': request.data['total_limit'],
+            }
+
+            serializer = CategoryHistorySerializer(data=category_history_data, partial=True)
+
+            if serializer.is_valid(raise_exception=True):
+                serializer.save()
+
+                return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
