@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
+import hashlib
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email=None, password=None, firebase_token=None):
@@ -29,8 +31,15 @@ class User(AbstractBaseUser):
     firebase_token = models.CharField(max_length=4096, null=True)
 
     USERNAME_FIELD = 'email'
-
     objects = UserManager()
+
+    """
+    def set_password(self, raw_password):
+        salt = b'mondey'
+        iterations = 1000
+
+        self.password = hashlib.pbkdf2_hmac('sha256', bytes(raw_password, 'utf-8'), salt, iterations).hex()
+    """
 
     def __str__(self):
         return self.email
@@ -38,7 +47,7 @@ class User(AbstractBaseUser):
 
 class UserSetting(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    income = models.IntegerField(default=0, null=False)
+    income = models.IntegerField()
     alarm = models.TimeField(null=True)
 
 

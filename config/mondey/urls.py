@@ -1,5 +1,6 @@
 from django.conf.urls import url
-from .views import UserAPI, PushMessageAPI, TokenAPI, CustomCategoryView, ExpenditureView, IncomeHistoryView, CategoryHistoryView
+from .views import UserAPI, PushMessageAPI, TokenAPI, CustomCategoryView, \
+    ExpenditureView, IncomeHistoryView, CategoryHistoryView
 
 urlpatterns = [
     url(r'user/', UserAPI.as_view(), name='user'),

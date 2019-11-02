@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model, authenticate
 
 from .utils import get_token, decode_token
 
-from .models import CustomCategory, Expenditure
+from .models import CustomCategory, Expenditure, IncomeHistory, CategoryHistory
 from .serializers import CustomCategorySerializer, ExpenditureSerializer, \
     IncomeHistorySerializer, CategoryHistorySerializer
 
@@ -157,6 +157,23 @@ class CustomCategoryView(APIView):
     """
     authentication_classes = (JSONWebTokenAuthentication, )
 
+    def get(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            custom_category = CustomCategory.objects.filter(user=user_id)
+            serializer = CustomCategorySerializer(custom_category, many=True)
+
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
     def post(self, request):
         headers = request.headers
         token = headers['Authorization'].split(' ')[1]
@@ -251,6 +268,23 @@ class ExpenditureView(APIView):
     """
     authentication_classes = (JSONWebTokenAuthentication, )
 
+    def get(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            expenditure = Expenditure.objects.filter(user=user_id)
+            serializer = ExpenditureSerializer(expenditure, many=True)
+
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
     def post(self, request):
         headers = request.headers
         token = headers['Authorization'].split(' ')[1]
@@ -344,6 +378,23 @@ class IncomeHistoryView(APIView):
     """
     authentication_classes = (JSONWebTokenAuthentication, )
 
+    def get(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            income_history = IncomeHistory.objects.filter(user=user_id)
+            serializer = IncomeHistorySerializer(income_history, many=True)
+
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
+
     def post(self, request):
         headers = request.headers
         token = headers['Authorization'].split(' ')[1]
@@ -387,6 +438,23 @@ class CategoryHistoryView(APIView):
     total_limit = models.IntegerField()
     """
     authentication_classes = (JSONWebTokenAuthentication, )
+
+    def get(self, request):
+        headers = request.headers
+        token = headers['Authorization'].split(' ')[1]
+        data = decode_token(token)
+
+        if data['type'] == 'access':
+            email = data['email']
+
+            user_id = User.objects.get(email=email).id
+
+            category_history = CategoryHistory.objects.filter(user=user_id)
+            serializer = CategoryHistorySerializer(category_history, many=True)
+
+            return Response(status=status.HTTP_200_OK, data=serializer.data)
+
+        return Response(status=status.HTTP_403_FORBIDDEN)
 
     def post(self, request):
         headers = request.headers

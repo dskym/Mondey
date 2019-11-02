@@ -39,4 +39,3 @@ def decode_token(token):
     data = jwt.decode(token, key=JWT_KEY, algorithms='HS256')
 
     return data
-
