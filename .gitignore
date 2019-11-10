@@ -92,7 +92,9 @@ uwsgi/
 *.pyc
 __pycache__/
 __migrations__/
+migrations/
 local_settings.py
 manager.py
 
-### Mondey ###
+### pycharm ###
+.idea/
