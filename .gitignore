@@ -77,15 +77,6 @@ docs/_build/
 # PyBuilder
 target/
 
-### ssl ###
-ssl/
-
-### nginx ###
-nginx/
-
-### uwsgi ###
-uwsgi/
-
 ### Django ###
 *.log
 *.pot
