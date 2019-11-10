@@ -94,3 +94,5 @@ __pycache__/
 __migrations__/
 local_settings.py
 manager.py
+
+### Mondey ###
