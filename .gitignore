@@ -98,3 +98,6 @@ manager.py
 
 ### pycharm ###
 .idea/
+
+### Local Dependency ###
+info.txt
